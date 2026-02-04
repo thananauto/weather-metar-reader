@@ -1,9 +1,20 @@
 <!DOCTYPE html>
+<!--
+METAR Weather Reader - Home Page
+
+This is the landing page where users enter airport codes to get weather reports.
+Features:
+  - Clean, centered layout with gradient background
+  - Auto-uppercase input for airport codes
+  - Example airport codes for quick testing
+  - Responsive design works on mobile and desktop
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>METAR Weather Reader</title>
+    <!-- Embedded CSS for self-contained template -->
     <style>
         * {
             margin: 0;
@@ -134,14 +145,25 @@
     </style>
 </head>
 <body>
+    <!-- Main content container with card-style design -->
     <div class="container">
         <div class="plane-icon">✈️</div>
         <h1>METAR Reader</h1>
         <p class="subtitle">Get instant, readable weather reports for any airport</p>
 
+        <!--
+        Form submission to /get-weather endpoint
+        Uses POST method to send airport_code parameter
+        -->
         <form action="/get-weather" method="POST">
             <div class="form-group">
                 <label for="airport_code">Airport Code (ICAO)</label>
+                <!--
+                Airport code input
+                - maxlength="4": ICAO codes are always 4 characters
+                - text-transform: uppercase applied via CSS
+                - autofocus: Cursor starts here for quick entry
+                -->
                 <input
                     type="text"
                     id="airport_code"
@@ -155,24 +177,42 @@
             <button type="submit">Get Weather Report</button>
         </form>
 
+        <!--
+        Example airport codes section
+        Provides quick-fill buttons for testing
+        Covers major airports from different regions
+        -->
         <div class="examples">
             <h3>Try these examples:</h3>
             <div class="example-codes">
-                <span class="example-code" onclick="fillCode('KJFK')">KJFK</span>
-                <span class="example-code" onclick="fillCode('KLAX')">KLAX</span>
-                <span class="example-code" onclick="fillCode('VOMM')">VOMM</span>
-                <span class="example-code" onclick="fillCode('EGLL')">EGLL</span>
-                <span class="example-code" onclick="fillCode('RJTT')">RJTT</span>
+                <!-- Example airports from different regions -->
+                <span class="example-code" onclick="fillCode('KJFK')">KJFK</span> <!-- New York JFK -->
+                <span class="example-code" onclick="fillCode('KLAX')">KLAX</span> <!-- Los Angeles -->
+                <span class="example-code" onclick="fillCode('VOMM')">VOMM</span> <!-- Chennai, India -->
+                <span class="example-code" onclick="fillCode('EGLL')">EGLL</span> <!-- London Heathrow -->
+                <span class="example-code" onclick="fillCode('RJTT')">RJTT</span> <!-- Tokyo Haneda -->
             </div>
         </div>
     </div>
 
+    <!--
+    JavaScript for enhanced user experience
+    - fillCode(): Quick-fill function for example codes
+    - Auto-uppercase: Ensures input is always uppercase (ICAO standard)
+    -->
     <script>
+        /**
+         * Fill the airport code input with a clicked example code
+         * @param {string} code - The airport code to fill
+         */
         function fillCode(code) {
             document.getElementById('airport_code').value = code;
         }
 
-        // Auto-uppercase input
+        /**
+         * Auto-convert input to uppercase as user types
+         * ICAO airport codes are always uppercase
+         */
         document.getElementById('airport_code').addEventListener('input', function(e) {
             e.target.value = e.target.value.toUpperCase();
         });

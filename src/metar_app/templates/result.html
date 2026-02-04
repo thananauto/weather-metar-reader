@@ -1,9 +1,24 @@
 <!DOCTYPE html>
+<!--
+METAR Weather Reader - Results Page
+
+This template displays decoded weather information or error messages.
+Uses Jinja2 templating to conditionally render:
+  - Error messages (if METAR fetch/decode failed)
+  - Weather report (summary, detailed conditions, raw METAR)
+
+Template Variables:
+  - error: Error message string (if present, skip weather display)
+  - airport_code: 4-letter ICAO code
+  - decoded: Dict with 'summary', 'details', 'station', 'time'
+  - raw_metar: Original METAR string
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Report - METAR Reader</title>
+    <!-- Embedded CSS for self-contained template -->
     <style>
         * {
             margin: 0;
@@ -148,7 +163,13 @@
 <body>
     <div class="container">
         <div class="card">
+            <!--
+            Jinja2 conditional rendering:
+            If 'error' variable is present, show error message
+            Otherwise, display the full weather report
+            -->
             {% if error %}
+                <!-- Error State: Display error message -->
                 <div class="header">
                     <h1>⚠️ Error</h1>
                 </div>
@@ -156,16 +177,26 @@
                     {{ error }}
                 </div>
             {% else %}
+                <!-- Success State: Display decoded weather information -->
+                <!-- Weather report header with airport code and observation time -->
                 <div class="header">
                     <h1>Weather Report</h1>
                     <div class="airport-code">{{ airport_code }}</div>
                     <div class="time">{{ decoded.time }}</div>
                 </div>
 
+                <!--
+                Summary section: One-sentence weather overview
+                Provides quick understanding without reading details
+                -->
                 <div class="summary">
                     {{ decoded.summary }}
                 </div>
 
+                <!--
+                Detailed conditions: Individual weather components
+                Loops through all decoded elements (sky, temp, wind, etc.)
+                -->
                 <div class="details">
                     <h2>Detailed Conditions</h2>
                     {% for detail in decoded.details %}
@@ -173,6 +204,11 @@
                     {% endfor %}
                 </div>
 
+                <!--
+                Raw METAR display: Shows original coded format
+                Useful for pilots and aviation professionals who read METAR
+                Also helps users learn METAR format
+                -->
                 <div class="raw-metar">
                     <h3>Raw METAR Data</h3>
                     <div class="raw-metar-text">{{ raw_metar }}</div>
