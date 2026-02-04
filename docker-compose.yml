@@ -1,0 +1,31 @@
+# METAR Weather Reader - Docker Compose Configuration
+# Simplifies running the application with Docker
+
+version: '3.8'
+
+services:
+  # Main web application service
+  metar-reader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: metar-weather-reader
+    ports:
+      - "5000:5000"  # Map host port 5000 to container port 5000
+    environment:
+      - FLASK_ENV=production  # Set to 'development' for debug mode
+      - PYTHONUNBUFFERED=1    # Ensure Python output is sent straight to terminal
+    restart: unless-stopped   # Restart policy for production
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/', timeout=2)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - metar-network
+
+# Network definition
+networks:
+  metar-network:
+    driver: bridge
