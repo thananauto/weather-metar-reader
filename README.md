@@ -21,6 +21,7 @@ A Flask web application that fetches and decodes METAR (Meteorological Aerodrome
 - [Project Structure](#-project-structure)
 - [How METAR Decoding Works](#-how-metar-decoding-works)
 - [Best Practices](#-best-practices)
+- [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
@@ -361,12 +362,19 @@ weather-metar-reader/
 │       └── templates/
 │           ├── index.html      # Home page with input form
 │           └── result.html     # Results page with weather report
+├── tests/
+│   ├── __init__.py            # Test package initialization
+│   ├── test_app.py            # Unit tests for Flask app (35+ tests)
+│   └── README.md              # Testing documentation
 ├── Dockerfile                  # Docker image configuration
 ├── docker-compose.yml          # Docker Compose configuration
 ├── .dockerignore              # Docker build exclusions
+├── pytest.ini                  # Pytest configuration
+├── .coveragerc                # Coverage configuration
 ├── requirements.txt            # Python dependencies
 ├── run.sh                      # Convenience script to run the app
-├── test_metar.py              # Test script for validation
+├── run_tests.sh               # Test runner script
+├── test_metar.py              # Integration test script
 ├── .gitignore                 # Git exclusions
 └── README.md                  # This file
 ```
@@ -537,6 +545,81 @@ KJFK 041851Z 31008KT 10SM FEW250 M04/M17 A3034
 
 5. **Layer Caching**
    Copy `requirements.txt` before code for better caching
+
+## 🧪 Testing
+
+### Running Tests
+
+The application includes a comprehensive test suite with 35+ unit tests covering all routes and scenarios.
+
+```bash
+# Install test dependencies
+pip install -r requirements.txt
+
+# Run all tests
+pytest tests/
+
+# Run with coverage report
+pytest tests/ --cov=src/metar_app --cov-report=html
+
+# Use the test runner script
+./run_tests.sh                # Full test suite with coverage
+./run_tests.sh quick          # Quick tests without coverage
+./run_tests.sh coverage       # Detailed coverage report
+```
+
+### Test Coverage
+
+The test suite covers:
+- ✅ All Flask routes (/, /get-weather, /api/weather/<code>)
+- ✅ Input validation (empty, invalid lengths, special chars)
+- ✅ Success scenarios with mock METAR data
+- ✅ Error handling (network errors, API failures, parsing errors)
+- ✅ API endpoint JSON responses
+- ✅ Edge cases and integration tests
+
+### Mock Data
+
+Tests use realistic mock METAR data for:
+- **KJFK** (New York) - Clear weather, cold temperatures
+- **VOMM** (Chennai) - Hot weather, gusty winds
+- **EGLL** (London) - Rainy conditions, low clouds
+
+### Viewing Coverage Report
+
+After running tests with coverage, open the HTML report:
+
+```bash
+# Generate report
+pytest tests/ --cov=src/metar_app --cov-report=html
+
+# Open in browser
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+start htmlcov/index.html  # Windows
+```
+
+### Test Structure
+
+```python
+# Example test with mocking
+@patch('app.requests.get')
+@patch('app.decode_metar')
+def test_valid_airport_code(mock_decode, mock_get, client):
+    # Setup mocks
+    mock_response = Mock()
+    mock_response.text = "KJFK 041851Z 31008KT..."
+    mock_get.return_value = mock_response
+
+    # Make request
+    response = client.post('/get-weather', data={'airport_code': 'KJFK'})
+
+    # Assert
+    assert response.status_code == 200
+    assert b'Weather Report' in response.data
+```
+
+For detailed testing documentation, see [tests/README.md](tests/README.md)
 
 ## 🚀 Deployment
 
