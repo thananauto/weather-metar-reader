@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>METAR Weather Reader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            transition: border-color 0.3s;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .examples {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .examples h3 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .example-codes {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .example-code {
+            background: #f5f5f5;
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .example-code:hover {
+            background: #e5e5e5;
+        }
+
+        .plane-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="plane-icon">✈️</div>
+        <h1>METAR Reader</h1>
+        <p class="subtitle">Get instant, readable weather reports for any airport</p>
+
+        <form action="/get-weather" method="POST">
+            <div class="form-group">
+                <label for="airport_code">Airport Code (ICAO)</label>
+                <input
+                    type="text"
+                    id="airport_code"
+                    name="airport_code"
+                    placeholder="e.g., KJFK"
+                    maxlength="4"
+                    required
+                    autofocus
+                >
+            </div>
+            <button type="submit">Get Weather Report</button>
+        </form>
+
+        <div class="examples">
+            <h3>Try these examples:</h3>
+            <div class="example-codes">
+                <span class="example-code" onclick="fillCode('KJFK')">KJFK</span>
+                <span class="example-code" onclick="fillCode('KLAX')">KLAX</span>
+                <span class="example-code" onclick="fillCode('VOMM')">VOMM</span>
+                <span class="example-code" onclick="fillCode('EGLL')">EGLL</span>
+                <span class="example-code" onclick="fillCode('RJTT')">RJTT</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillCode(code) {
+            document.getElementById('airport_code').value = code;
+        }
+
+        // Auto-uppercase input
+        document.getElementById('airport_code').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>
